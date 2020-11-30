@@ -1,7 +1,23 @@
-from flask import Flask
-from flask import jsonify
+from flask import jsonify, request, Flask
+from catalogo import get_products, create_products
 
 app = Flask(__name__)
+
+@app.route('/product', methods=['GET', 'POST'])
+def list_all_products():
+    '''This view magages the CRUD of products'''
+    if request.method == 'GET':
+        response = get_products()
+        return jsonify(response)
+    if request.method == 'POST':
+        data = request.get_json()
+        create_product(
+                data['sky'],
+                data['title'],
+                data['long_description'],
+                data['price_euro'])
+        return jsonify({ "status": "ok"})
+
 
 @app.route('/hello')
 def hello_world():
