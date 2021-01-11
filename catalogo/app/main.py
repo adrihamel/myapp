@@ -23,51 +23,51 @@ else:
 
 @app.route('/product/<sku>', methods=['GET', ])
 def get_product_by_sku(sku):
-	product = redis_client.hgetall(sku) if redis_client else None
-	if not product:
-		product = get_product(sku)
-		product['cache'] = 'miss'
+        product = redis_client.hgetall(sku) if redis_client else None
+        if not product:
+                product = get_product(sku)
+                product['cache'] = 'miss'
                 if redis_client:
                     redis_client.hmset(product['sku'], product)
-	else:
-		pass
-		product['cache'] = 'hit'
+        else:
+                pass
+                product['cache'] = 'hit'
 
-	return jsonify(product)
+        return jsonify(product)
 
 
 @app.route('/product', methods=['GET', 'POST'])
 def list_all_products():
-	'''This view manages the CRUD of products'''
-	print("Hola mundo")
-	if request.method == 'GET':
-		response = get_products()
-		return jsonify(response)
-	
-	if request.method == 'POST':
-		data = request.get_json()
-		new_sku = create_product(
-			None,
-			data['title'],
-			data['long_description'],
-			data['price_euro'])
-		return jsonify({"status": "ok", "sku": new_sku})
+        '''This view manages the CRUD of products'''
+        print("Hola mundo")
+        if request.method == 'GET':
+                response = get_products()
+                return jsonify(response)
+        
+        if request.method == 'POST':
+                data = request.get_json()
+                new_sku = create_product(
+                        None,
+                        data['title'],
+                        data['long_description'],
+                        data['price_euro'])
+                return jsonify({"status": "ok", "sku": new_sku})
 
 
 @app.route('/hello')
 def hello_world():
-	message = "Hola Mundo, soy Python! Ahora con CloudBuild y hablando JSON"
-	response = {
-		"message": message,
-		"length": len(message)
-	}
-	return jsonify(response)
+        message = "Hola Mundo, soy Python! Ahora con CloudBuild y hablando JSON"
+        response = {
+                "message": message,
+                "length": len(message)
+        }
+        return jsonify(response)
 
 
 @app.route('/bye')
 def bye_world():
-	return ("Adios mundo cruel")
+        return ("Adios mundo cruel")
 
 
 if __name__ == '__main__':
-	app.run(debug=True, host='0.0.0.0')
+        app.run(debug=True, host='0.0.0.0')
